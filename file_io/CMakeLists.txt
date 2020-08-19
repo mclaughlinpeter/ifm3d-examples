@@ -24,11 +24,27 @@ find_package(ifm3d 0.11.0 CONFIG
   REQUIRED COMPONENTS camera framegrabber image
   )
 
+##############################################################
+## finding the boost libs
+##############################################################
+find_package(Boost REQUIRED system)
+include_directories(${Boost_INCLUDE_DIRS})
+
+##############################################################
+## finding the pcl libs
+##############################################################
+find_package(PCL REQUIRED COMPONENTS common io)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
 add_executable(ex-file_io ex-file_io.cpp)
 target_link_libraries(ex-file_io
                       ifm3d::camera
                       ifm3d::framegrabber
                       ifm3d::image
                       ${OpenCV_LIBRARIES}
+		      ${Boost_LIBRARIES}
+		      ${PCL_LIBRARIES}
                       )
 

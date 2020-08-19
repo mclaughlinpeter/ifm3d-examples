@@ -31,6 +31,10 @@
 #include <ifm3d/fg.h>
 #include <ifm3d/image.h>
 
+#include <pcl/pcl_exports.h>
+#include <pcl/io/ply_io.h>
+#include <pcl/io/file_io.h>
+
 int main(int argc, const char **argv)
 {
   auto cam = ifm3d::Camera::MakeShared();
@@ -46,8 +50,17 @@ int main(int argc, const char **argv)
       return -1;
     }
 
+  std::cout << "Writing .png files!" << std::endl;
   imwrite("amplitude.png", img->AmplitudeImage());
   imwrite("radial_distance.png", img->DistanceImage());
+
+  pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC = img->Cloud();
+  std::cout << "Point Cloud width: " << ptrPC->width << ", height: " << ptrPC->height << std::endl;
+  std::cout << "Point Cloud is_dense: " << ptrPC->is_dense << std::endl;
+
+  std::cout << "Writing Point Cloud!" << std::endl;
+  pcl::PLYWriter writer;
+  writer.write("point_cloud.ply", *ptrPC);
 
   return 0;
 }
