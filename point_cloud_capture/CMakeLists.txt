@@ -5,8 +5,7 @@ project(pcl_io CXX)
 
 # Global compiler flags
 set(CMAKE_BUILD_TYPE Release) # Release or Debug
-set(CMAKE_CXX_EXTENSIONS OFF) # OFF -> -std=c++14, ON -> -std=gnu++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 if(FORCE_OPENCV3)
@@ -46,5 +45,5 @@ target_link_libraries(pcl_io
                       ${OpenCV_LIBRARIES}
 		                  ${Boost_LIBRARIES}
 		                  ${PCL_LIBRARIES}
+                      -lstdc++fs
                       )
-

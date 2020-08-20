@@ -16,16 +16,17 @@
  */
 
 //
-// ex-file_io.cpp
+// pcl_io.cpp
 //
-// Capture a frame from the camera, and write the data out to files. For
-// exemplary purposes, we will write the amplitdue and radial distance images
-// to PNG files. NOTE: we have removed the PCL I/O from this example for now as
-// we are trying to deprecate PCL from our library.
+// Capture frames from the camera, and write the data out to PCL files.
 //
 
 #include <iostream>
 #include <memory>
+#include <cstdlib>
+#include <filesystem>
+#include <string>
+
 #include <opencv2/opencv.hpp>
 #include <ifm3d/camera.h>
 #include <ifm3d/fg.h>
@@ -39,30 +40,47 @@ int main(int argc, const char **argv)
 {
   std::cout << "Hello from pcl_io application!" << std::endl;
 
+  // parse command line arguments
+  if (argc <= 1)
+  {
+    std::cout << "No folder path provided, exiting ..." << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  // check if image destination folder exists
+  std::string imageDirectory = argv[1];
+  if (!std::filesystem::exists(imageDirectory))
+  {
+    std::cout << "Folder does not exist, exiting ..." << std::endl;
+    exit(EXIT_FAILURE);
+  }  
+
   auto cam = ifm3d::Camera::MakeShared();
 
   ifm3d::ImageBuffer::Ptr img = std::make_shared<ifm3d::ImageBuffer>();
-  ifm3d::FrameGrabber::Ptr fg =
-    std::make_shared<ifm3d::FrameGrabber>(
-      cam, ifm3d::IMG_AMP|ifm3d::IMG_CART|ifm3d::IMG_RDIS);
+  ifm3d::FrameGrabber::Ptr fg = std::make_shared<ifm3d::FrameGrabber>(cam, ifm3d::IMG_AMP|ifm3d::IMG_CART|ifm3d::IMG_RDIS);
 
-  if (! fg->WaitForFrame(img.get(), 1000))
+  std::cout << "Press enter to take image, enter 'e' to exit: ";
+  for (int indexImage = 1, ch; (ch = std::cin.get()) != EOF && ch != 'e'; indexImage++)
+  {        
+    if (ch != '\n')
+      while (std::cin.get() != '\n');
+    
+    if (! fg->WaitForFrame(img.get(), 1000))
     {
       std::cerr << "Timeout waiting for camera!" << std::endl;
       return -1;
     }
 
-  std::cout << "Writing .png files!" << std::endl;
-  imwrite("amplitude.png", img->AmplitudeImage());
-  imwrite("radial_distance.png", img->DistanceImage());
-
-  pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC = img->Cloud();
-  std::cout << "Point Cloud width: " << ptrPC->width << ", height: " << ptrPC->height << std::endl;
-  std::cout << "Point Cloud is_dense: " << ptrPC->is_dense << std::endl;
-
-  std::cout << "Writing Point Cloud!" << std::endl;
-  pcl::PLYWriter writer;
-  writer.write("point_cloud.ply", *ptrPC);
+    pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC = img->Cloud();
+    
+    // write point cloud to disk
+    std::string fileName = imageDirectory + "/point_cloud_" + std::to_string(indexImage) + ".ply";
+    pcl::PLYWriter writer;
+    writer.write(fileName, *ptrPC);    
+    
+    std::cout << "Press enter to take image, enter 'e' to exit: ";
+  }
+  std::cout << "Exiting\n";
 
   return 0;
 }
