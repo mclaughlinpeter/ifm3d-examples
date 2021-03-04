@@ -21,6 +21,8 @@ option(BUILD_EXAMPLE_PCICCLIENT_ASYNC_MESSAGES "Build pcicclient-async-messages 
 option(BUILD_EXAMPLE_PCICCLIENT_SET_IO "Build pcicclient-set-io example" ON)
 option(BUILD_EXAMPLE_TIMESTAMP "Build timestamp example" ON)
 option(BUILD_EXAMPLE_POINT_CLOUD_CAPTURE "Build PCL based point cloud capture example" ON)
+option(BUILD_LIBRARY_POINT_CLOUD_CAPTURE "Build PCL based point cloud capture library" ON)
+option(BUILD_EXAMPLE_POINT_CLOUD_CAPTURE_CLIENT "Build PCL based point cloud capture library client" ON)
 
 ################################################
 ## Bring in dependent projects
@@ -72,6 +74,14 @@ if(TARGET ifm3d::image)
 
   if(BUILD_EXAMPLE_POINT_CLOUD_CAPTURE)
     add_subdirectory(point_cloud_capture)
+  endif()
+
+  if(BUILD_LIBRARY_POINT_CLOUD_CAPTURE)
+    add_subdirectory(point_cloud_capture_library)
+  endif()
+
+  if(BUILD_EXAMPLE_POINT_CLOUD_CAPTURE_CLIENT)
+    add_subdirectory(point_cloud_capture_library_client)
   endif()
 endif()
 
