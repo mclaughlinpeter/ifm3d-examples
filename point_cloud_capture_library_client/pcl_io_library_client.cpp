@@ -4,7 +4,11 @@
 int main(int argc, const char **argv)
 {
     std::cout << "Hello from main()" << std::endl;
-    capture("images");
+
+    IfmCamera ifmCamera;
+    ifmCamera.GrabImage("images");
+
+    //capture("images");
 
     return 0;
 }

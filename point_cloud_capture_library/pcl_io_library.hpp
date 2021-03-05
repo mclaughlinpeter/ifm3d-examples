@@ -20,6 +20,14 @@
 #include <pcl/io/ply_io.h>
 #include <pcl/io/file_io.h>
 
-extern "C" LIB_API void capture(std::string imageDirectory);
+extern "C" {
+    LIB_API void capture(std::string imageDirectory);
+    class LIB_API IfmCamera
+    {
+        public:
+        IfmCamera();
+        void GrabImage(std::string imageDirectory);
+    };
+} 
 
 #endif

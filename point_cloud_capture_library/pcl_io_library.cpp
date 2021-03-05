@@ -62,3 +62,13 @@ void capture(std::string imageDirectory)
   }
   std::cout << "Exiting\n";
 }
+
+IfmCamera::IfmCamera()
+{
+
+}
+
+void IfmCamera::GrabImage(std::string imageDirectory)
+{
+  capture(imageDirectory);
+}
