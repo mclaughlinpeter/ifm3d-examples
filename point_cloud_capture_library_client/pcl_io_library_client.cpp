@@ -6,9 +6,11 @@ int main(int argc, const char **argv)
     std::cout << "Hello from main()" << std::endl;
 
     IfmCamera ifmCamera;
-    ifmCamera.GrabImage("images");
+    //ifmCamera.GrabAndSaveImages("images");
 
-    //capture("images");
+    std::vector<std::vector<float>> image = ifmCamera.GrabImage();
+    std::cout << image.size() << std::endl;
+    std::cout << image[0].size() << std::endl;
 
     return 0;
 }

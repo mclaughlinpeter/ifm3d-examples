@@ -22,15 +22,19 @@
 #include <pcl/io/file_io.h>
 
 extern "C" {
-    LIB_API void capture(std::string imageDirectory);
     class LIB_API IfmCamera
     {
-        private:
+    private:
+        ifm3d::Camera::Ptr cam;
+        ifm3d::ImageBuffer::Ptr img;
+        ifm3d::FrameGrabber::Ptr fg;
         std::vector<std::vector<float>> ConvertToXYZ(pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC);
-        public:
+    public:
         IfmCamera();
-        void GrabImage(std::string imageDirectory);
+        ~IfmCamera();
+        void GrabAndSaveImages(std::string imageDirectory);
+        std::vector<std::vector<float>> GrabImage();
     };
-} 
+}
 
 #endif
