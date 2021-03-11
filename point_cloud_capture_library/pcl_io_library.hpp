@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 #include <opencv2/opencv.hpp>
 #include <ifm3d/camera.h>
@@ -24,6 +25,8 @@ extern "C" {
     LIB_API void capture(std::string imageDirectory);
     class LIB_API IfmCamera
     {
+        private:
+        std::vector<std::vector<float>> ConvertToXYZ(pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC);
         public:
         IfmCamera();
         void GrabImage(std::string imageDirectory);

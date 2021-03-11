@@ -25,7 +25,7 @@
 
 void capture(std::string imageDirectory)
 {
-  std::cout << "Hello from pcl_io application!" << std::endl;
+  std::cout << "Hello from pcl_io application capture method!" << std::endl;
 
   // check if image destination folder exists
   if (!std::filesystem::exists(imageDirectory))
@@ -57,7 +57,11 @@ void capture(std::string imageDirectory)
     std::string fileName = imageDirectory + "/point_cloud_" + std::to_string(indexImage) + ".ply";
     pcl::PLYWriter writer;
     writer.write(fileName, *ptrPC);    
-    
+
+    // extract data
+    std::vector<ifm3d::PointT, Eigen::aligned_allocator<ifm3d::PointT>> data = ptrPC->points;
+    auto myVar = data[0];
+            
     std::cout << "Press enter to take image, enter 'e' to exit: ";
   }
   std::cout << "Exiting\n";
@@ -71,4 +75,23 @@ IfmCamera::IfmCamera()
 void IfmCamera::GrabImage(std::string imageDirectory)
 {
   capture(imageDirectory);
+}
+
+std::vector<std::vector<float>> IfmCamera::ConvertToXYZ(pcl::PointCloud<ifm3d::PointT>::Ptr ptrPC)
+{
+    // extract raw point cloud data
+    std::vector<ifm3d::PointT, Eigen::aligned_allocator<ifm3d::PointT>> data = ptrPC->points;
+    std::size_t noOfPoints = data.size();
+
+    // create structure using std::vector
+    std::vector<std::vector<float>> dataXYZ(3, std::vector<float>(noOfPoints, 0.0F));
+
+    for (size_t i = 0; i < noOfPoints; i++)
+    {
+      dataXYZ[0][i] = data[i].x;
+      dataXYZ[1][i] = data[i].y;
+      dataXYZ[2][i] = data[i].z;
+    }    
+
+  return dataXYZ;
 }
